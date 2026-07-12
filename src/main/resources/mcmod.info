@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "haze",
+    "name": "Haze",
+    "description": "A free mixin-based injection hacked-client",
+    "version": "b100",
+    "mcversion": "1.8.9",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

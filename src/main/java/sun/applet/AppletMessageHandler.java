@@ -1,0 +1,87 @@
+package sun.applet;
+
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import sun.rmi.rmic.iiop.Constants;
+
+/* JADX INFO: Access modifiers changed from: package-private */
+/* loaded from: target.jar:sun/applet/AppletMessageHandler.class */
+public class AppletMessageHandler {
+    private static ResourceBundle rb;
+    private String baseKey;
+
+    static {
+        try {
+            rb = ResourceBundle.getBundle("sun.applet.resources.MsgAppletViewer");
+        } catch (MissingResourceException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public AppletMessageHandler(String str) {
+        this.baseKey = null;
+        this.baseKey = str;
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public String getMessage(String str) {
+        return rb.getString(getQualifiedKey(str));
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public String getMessage(String str, Object obj) {
+        MessageFormat messageFormat = new MessageFormat(rb.getString(getQualifiedKey(str)));
+        Object[] objArr = new Object[1];
+        if (obj == null) {
+            obj = "null";
+        }
+        objArr[0] = obj;
+        return messageFormat.format(objArr);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public String getMessage(String str, Object obj, Object obj2) {
+        MessageFormat messageFormat = new MessageFormat(rb.getString(getQualifiedKey(str)));
+        Object[] objArr = new Object[2];
+        if (obj == null) {
+            obj = "null";
+        }
+        if (obj2 == null) {
+            obj2 = "null";
+        }
+        objArr[0] = obj;
+        objArr[1] = obj2;
+        return messageFormat.format(objArr);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public String getMessage(String str, Object obj, Object obj2, Object obj3) {
+        MessageFormat messageFormat = new MessageFormat(rb.getString(getQualifiedKey(str)));
+        Object[] objArr = new Object[3];
+        if (obj == null) {
+            obj = "null";
+        }
+        if (obj2 == null) {
+            obj2 = "null";
+        }
+        if (obj3 == null) {
+            obj3 = "null";
+        }
+        objArr[0] = obj;
+        objArr[1] = obj2;
+        objArr[2] = obj3;
+        return messageFormat.format(objArr);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public String getMessage(String str, Object[] objArr) {
+        return new MessageFormat(rb.getString(getQualifiedKey(str))).format(objArr);
+    }
+
+    String getQualifiedKey(String str) {
+        return this.baseKey + Constants.NAME_SEPARATOR + str;
+    }
+}

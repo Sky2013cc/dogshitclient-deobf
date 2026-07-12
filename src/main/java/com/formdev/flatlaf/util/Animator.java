@@ -1,0 +1,223 @@
+package com.formdev.flatlaf.util;
+
+import com.formdev.flatlaf.FlatSystemProperties;
+import java.util.ArrayList;
+import java.util.Iterator;
+import javax.swing.Timer;
+
+/* loaded from: target.jar:com/formdev/flatlaf/util/Animator.class */
+public class Animator {
+    private int duration;
+    private int resolution;
+    private Interpolator interpolator;
+    private final ArrayList<TimingTarget> targets;
+    private final Runnable endRunnable;
+    private boolean running;
+    private boolean hasBegun;
+    private boolean timeToStop;
+    private long startTime;
+    private Timer timer;
+
+    @FunctionalInterface
+    /* loaded from: target.jar:com/formdev/flatlaf/util/Animator$Interpolator.class */
+    public interface Interpolator {
+        float interpolate(float f);
+    }
+
+    public static boolean useAnimation() {
+        return FlatSystemProperties.getBoolean(FlatSystemProperties.ANIMATION, true);
+    }
+
+    public Animator(int duration) {
+        this(duration, null, null);
+    }
+
+    public Animator(int duration, TimingTarget target) {
+        this(duration, target, null);
+    }
+
+    public Animator(int duration, TimingTarget target, Runnable endRunnable) {
+        this.resolution = 10;
+        this.targets = new ArrayList<>();
+        setDuration(duration);
+        addTarget(target);
+        this.endRunnable = endRunnable;
+    }
+
+    public int getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(int duration) {
+        throwExceptionIfRunning();
+        if (duration <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.duration = duration;
+    }
+
+    public int getResolution() {
+        return this.resolution;
+    }
+
+    public void setResolution(int resolution) {
+        throwExceptionIfRunning();
+        if (resolution <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.resolution = resolution;
+    }
+
+    public Interpolator getInterpolator() {
+        return this.interpolator;
+    }
+
+    public void setInterpolator(Interpolator interpolator) {
+        throwExceptionIfRunning();
+        this.interpolator = interpolator;
+    }
+
+    public void addTarget(TimingTarget target) {
+        if (target == null) {
+            return;
+        }
+        synchronized (this.targets) {
+            if (!this.targets.contains(target)) {
+                this.targets.add(target);
+            }
+        }
+    }
+
+    public void removeTarget(TimingTarget target) {
+        synchronized (this.targets) {
+            this.targets.remove(target);
+        }
+    }
+
+    public void start() {
+        throwExceptionIfRunning();
+        this.running = true;
+        this.hasBegun = false;
+        this.timeToStop = false;
+        this.startTime = System.nanoTime() / 1000000;
+        if (this.timer == null) {
+            this.timer = new Timer(this.resolution, e -> {
+                if (!this.hasBegun) {
+                    begin();
+                    this.hasBegun = true;
+                }
+                timingEvent(getTimingFraction());
+            });
+        } else {
+            this.timer.setDelay(this.resolution);
+        }
+        this.timer.setInitialDelay(0);
+        this.timer.start();
+    }
+
+    public void stop() {
+        stop(false);
+    }
+
+    public void cancel() {
+        stop(true);
+    }
+
+    private void stop(boolean cancel) {
+        if (!this.running) {
+            return;
+        }
+        if (this.timer != null) {
+            this.timer.stop();
+        }
+        if (!cancel) {
+            end();
+        }
+        this.running = false;
+        this.timeToStop = false;
+    }
+
+    public void restart() {
+        cancel();
+        start();
+    }
+
+    public boolean isRunning() {
+        return this.running;
+    }
+
+    private float getTimingFraction() {
+        long currentTime = System.nanoTime() / 1000000;
+        long elapsedTime = currentTime - this.startTime;
+        this.timeToStop = elapsedTime >= ((long) this.duration);
+        float fraction = clampFraction(((float) elapsedTime) / this.duration);
+        if (this.interpolator != null) {
+            fraction = clampFraction(this.interpolator.interpolate(fraction));
+        }
+        return fraction;
+    }
+
+    private float clampFraction(float fraction) {
+        if (fraction < 0.0f) {
+            return 0.0f;
+        }
+        if (fraction > 1.0f) {
+            return 1.0f;
+        }
+        return fraction;
+    }
+
+    private void timingEvent(float fraction) {
+        synchronized (this.targets) {
+            Iterator<TimingTarget> it = this.targets.iterator();
+            while (it.hasNext()) {
+                TimingTarget target = it.next();
+                target.timingEvent(fraction);
+            }
+        }
+        if (this.timeToStop) {
+            stop();
+        }
+    }
+
+    private void begin() {
+        synchronized (this.targets) {
+            Iterator<TimingTarget> it = this.targets.iterator();
+            while (it.hasNext()) {
+                TimingTarget target = it.next();
+                target.begin();
+            }
+        }
+    }
+
+    private void end() {
+        synchronized (this.targets) {
+            Iterator<TimingTarget> it = this.targets.iterator();
+            while (it.hasNext()) {
+                TimingTarget target = it.next();
+                target.end();
+            }
+        }
+        if (this.endRunnable != null) {
+            this.endRunnable.run();
+        }
+    }
+
+    private void throwExceptionIfRunning() {
+        if (isRunning()) {
+            throw new IllegalStateException();
+        }
+    }
+
+    @FunctionalInterface
+    /* loaded from: target.jar:com/formdev/flatlaf/util/Animator$TimingTarget.class */
+    public interface TimingTarget {
+        void timingEvent(float f);
+
+        default void begin() {
+        }
+
+        default void end() {
+        }
+    }
+}

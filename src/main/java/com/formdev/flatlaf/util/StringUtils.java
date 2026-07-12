@@ -1,0 +1,93 @@
+package com.formdev.flatlaf.util;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/* loaded from: target.jar:com/formdev/flatlaf/util/StringUtils.class */
+public class StringUtils {
+    public static boolean isEmpty(String string) {
+        return string == null || string.isEmpty();
+    }
+
+    public static String removeLeading(String string, String leading) {
+        if (string.startsWith(leading)) {
+            return string.substring(leading.length());
+        }
+        return string;
+    }
+
+    public static String removeTrailing(String string, String trailing) {
+        if (string.endsWith(trailing)) {
+            return string.substring(0, string.length() - trailing.length());
+        }
+        return string;
+    }
+
+    public static List<String> split(String str, char delim) {
+        return split(str, delim, false, false);
+    }
+
+    public static List<String> split(String str, char delim, boolean trim, boolean excludeEmpty) {
+        int delimIndex = str.indexOf(delim);
+        if (delimIndex < 0) {
+            if (trim) {
+                str = str.trim();
+            }
+            if (!excludeEmpty || !str.isEmpty()) {
+                return Collections.singletonList(str);
+            }
+            return Collections.emptyList();
+        }
+        ArrayList<String> strs = new ArrayList<>();
+        int index = 0;
+        while (delimIndex >= 0) {
+            add(strs, str, index, delimIndex, trim, excludeEmpty);
+            index = delimIndex + 1;
+            delimIndex = str.indexOf(delim, index);
+        }
+        add(strs, str, index, str.length(), trim, excludeEmpty);
+        return strs;
+    }
+
+    private static void add(List<String> strs, String str, int beginIndex, int endIndex, boolean trim, boolean excludeEmpty) {
+        if (trim) {
+            beginIndex = trimBegin(str, beginIndex, endIndex);
+            endIndex = trimEnd(str, beginIndex, endIndex);
+        }
+        if (!excludeEmpty || endIndex > beginIndex) {
+            strs.add(str.substring(beginIndex, endIndex));
+        }
+    }
+
+    public static String substringTrimmed(String str, int beginIndex) {
+        return substringTrimmed(str, beginIndex, str.length());
+    }
+
+    public static String substringTrimmed(String str, int beginIndex, int endIndex) {
+        int beginIndex2 = trimBegin(str, beginIndex, endIndex);
+        int endIndex2 = trimEnd(str, beginIndex2, endIndex);
+        return endIndex2 > beginIndex2 ? str.substring(beginIndex2, endIndex2) : "";
+    }
+
+    public static boolean isTrimmedEmpty(String str) {
+        int length = str.length();
+        int beginIndex = trimBegin(str, 0, length);
+        int endIndex = trimEnd(str, beginIndex, length);
+        return beginIndex >= endIndex;
+    }
+
+    private static int trimBegin(String str, int beginIndex, int endIndex) {
+        while (beginIndex < endIndex && str.charAt(beginIndex) <= ' ') {
+            beginIndex++;
+        }
+        return beginIndex;
+    }
+
+    private static int trimEnd(String str, int beginIndex, int endIndex) {
+        while (beginIndex < endIndex && str.charAt(endIndex - 1) <= ' ') {
+            endIndex--;
+        }
+        return endIndex;
+    }
+}

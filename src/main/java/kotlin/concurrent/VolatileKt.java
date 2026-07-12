@@ -1,0 +1,13 @@
+package kotlin.concurrent;
+
+import kotlin.Metadata;
+import kotlin.SinceKotlin;
+
+/* compiled from: Volatile.kt */
+@Metadata(mv = {2, 1, 0}, k = 2, xi = 48, d1 = {"��\u000e\n��\n\u0002\u0018\u0002\n\u0002\u0018\u0002\n\u0002\b\u0003*\u001a\b\u0007\u0010��\"\u00020\u00012\u00020\u0001B\f\b\u0002\u0012\b\b\u0003\u0012\u0004\b\b(\u0004¨\u0006\u0005"}, d2 = {"Volatile", "Lkotlin/jvm/Volatile;", "Lkotlin/SinceKotlin;", "version", "1.9", "kotlin-stdlib"})
+/* loaded from: target.jar:kotlin/concurrent/VolatileKt.class */
+public final class VolatileKt {
+    @SinceKotlin(version = "1.9")
+    public static /* synthetic */ void Volatile$annotations() {
+    }
+}
