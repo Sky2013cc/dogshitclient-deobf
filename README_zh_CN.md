@@ -9,7 +9,6 @@
 | Java 源文件 | 3,813 |
 | 资源文件 | 12,161 |
 | 包数量 | 607 |
-| 总大小 | ~111 MB |
 | 原 JAR | 26 MB（混淆后） |
 
 ## 项目结构
@@ -27,17 +26,6 @@
         └── haze.forge.mixins.json     (mixin 配置)
 ```
 
-## API 支持（DS2API 部署）
-
-| 接口 | 端点 | 状态 |
-|------|------|:----:|
-| OpenAI Chat | `/v1/chat/completions` | ✅ |
-| OpenAI Models | `/v1/models` | ✅ |
-| Anthropic Messages | `/anthropic/v1/messages` | ✅ |
-| Anthropic Models | `/anthropic/v1/models` | ✅ |
-| Gemini Generate | `/v1beta/models/{model}:generateContent` | ✅ |
-| Ollama API | `/api/tags` | ✅ |
-
 ## 构建方法
 
 **前置要求：**
@@ -45,7 +33,6 @@
 - Gradle 4.10.x
 
 ```bash
-cd /root/haze-rebuild
 gradle setupDecompWorkspace
 gradle build
 ```

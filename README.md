@@ -9,7 +9,6 @@
 | Java source files | 3,813 |
 | Resource files | 12,161 |
 | Packages | 607 |
-| Total file size | ~111 MB |
 | Original JAR | 26 MB (obfuscated) |
 
 ## Project Structure
@@ -27,17 +26,6 @@
         └── haze.forge.mixins.json     (mixin config)
 ```
 
-## Protocol Support
-
-| Interface | Endpoint | Status |
-|-----------|----------|:------:|
-| OpenAI Chat | `/v1/chat/completions` | ✅ |
-| OpenAI Models | `/v1/models` | ✅ |
-| Anthropic Messages | `/anthropic/v1/messages` | ✅ |
-| Anthropic Models | `/anthropic/v1/models` | ✅ |
-| Gemini Generate | `/v1beta/models/{model}:generateContent` | ✅ |
-| Ollama API | `/api/tags` | ✅ |
-
 ## Building
 
 **Prerequisites:**
@@ -45,7 +33,6 @@
 - Gradle 4.10.x
 
 ```bash
-cd /root/haze-rebuild
 gradle setupDecompWorkspace
 gradle build
 ```
